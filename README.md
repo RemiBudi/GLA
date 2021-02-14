@@ -1,2 +1,2 @@
-# GLA
+# Places
 Places
