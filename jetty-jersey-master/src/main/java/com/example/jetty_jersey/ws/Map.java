@@ -5,6 +5,7 @@ import java.util.List;
 public class Map {
 
 	int status;
+	int id;
 	User owner;
 	String title;
 	String description;
@@ -12,7 +13,8 @@ public class Map {
 	List<Pin> pins;
 	List<Comment> comments;
 
-	public Map(int status, User owner, String title, List<String> tags, List<Pin> pins, List<Comment> comments) {
+	public Map(int status, int id, User owner, String title, List<String> tags, List<Pin> pins,
+			List<Comment> comments) {
 
 		this.status = status;
 		this.owner = owner;
@@ -20,6 +22,7 @@ public class Map {
 		this.tags = tags;
 		this.pins = pins;
 		this.comments = comments;
+		this.id = id;
 	}
 
 	public Map() {
@@ -34,6 +37,14 @@ public class Map {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public User getOwner() {
