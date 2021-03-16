@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Places</title>
+        <link href="MainPage.css" rel="stylesheet">
+        <meta charset="UTF-8">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+        <style type="text/css">
+        
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;  
+            }
+        </style>
+    
+        <script>
+            let map;
+            const MAP_BOUNDS = {
+                north: 85,
+                south: -85,
+                west: -180,
+                east: 180,
+            };
+
+            function initMap() {
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: 0, lng:0},
+                    zoom: 3,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                        position: google.maps.ControlPosition.BOTTOM_RIGHT
+                    },
+                    fullscreenControlOptions: {
+                        position: google.maps.ControlPosition.BOTTOM_RIGHT
+                    },
+                    restriction: {
+                        latLngBounds: MAP_BOUNDS,
+                        strictBounds: true,
+                        
+                    }
+                });
+            }
+
+        </script>
+
+    </head>    
+    
+    <body>
+        <div id="map"></div>
+
+        <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkyETtYbq8PPrVpUvUG1LZ2zcpbi-p8cc&callback=initMap&libraries=&v=weekly"
+        async
+        ></script>
+
+        <!-- Panels Left & Top -->
+        <div id="topPanel">
+            <h1 id="mapTitle">Map Title</h1>
+            <p id="mapDescription">Map description</p>
+            <button class="commentButton" id="commentMapButton" type="button">  </button>
+        </div> 
+
+        <div id="leftPanel">
+        
+            <img src="Resource/PlacesLogo_150px" alt="PlacesLogo" id="logo">
+            
+            <div id="navigationButtonPanel">
+                
+                <button class="defaultButton" id="addPinButton" type="button">
+                    Add a pin
+                </button>
+                <button class="defaultButton" id="publicMapsButton" type="button">
+                    Public Maps
+                </button>
+                <button class="defaultButton" id="myFriendsMapButton" type="button">
+                    My friend's Maps
+                </button>
+                <button class="defaultButton" id="myMapsButton" type="button">
+                    My Maps
+                </button>
+
+            </div>
+
+            <div id = "currentPinPanel">
+
+                <!--TODO-->
+                <button class="commentButton" id="commentPinButton" type="button">  </button>
+                <button class="deleteButton" id="deletePinButton" type="button">  </button>
+                <button class="defaultButton" id="findWayButton" type="button"> Find way </button>
+
+            </div>
+            
+        </div> 
+
+    </body>
+
+</html>
+
