@@ -182,27 +182,32 @@
 #addPinButton{
    top: 0px;
    left: 5%;
+   width: 40%;
 }
 
 #publicMapsButton{
     top: 60px;
     left: 5%;
+    width: 40%;
 }
 
 #myFriendsMapButton{
     top: 120px;
     left: 5%;
+    width: 40%;
 }
 
 #myMapsButton{
     top: 180px;
     left: 5%;
+    width: 40%;
 }
 
 #findWayButton{
 
     bottom: 10px;
     left: 10px;
+    width: 40%;
 
 }
 
@@ -213,4 +218,9 @@
     border-width: 2px;
     height: 560px;
     top: 280px;
+    text-align: center;
+    padding-left: 5%;
+    padding-right: 5%;  
+
 }
+
