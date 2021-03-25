@@ -8,7 +8,38 @@ const MAP_BOUNDS = {
     west: -180,
     east: 180,
 };
+/*
 
+putServerData("/ws/services/users/Remsi/addFriend", JSON.stringify(username),callDone);
+
+
+function getServerData(url, success){
+    $.ajax({
+        dataType: "json",
+        url: url
+    }).done(success);
+}
+
+function postServerData(url, data, success){
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: data,
+        contentType : 'application/json',
+        dataType: "json"
+    }).done(success);
+}
+
+function putServerData(url, data, success){
+    $.ajax({
+        type: 'PUT',
+        url: url, 
+        data: data,
+        contentType : 'application/json',
+        dataType: "json"
+    }).done(success);
+}
+*/
 function initMap() {
     
     //Initializing the map
