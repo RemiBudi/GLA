@@ -1,6 +1,7 @@
 :root{
     --topPanelHeight: 20%;
     --leftPanelWidth: 20%;
+    --currentPinPanelheight: 55%
   }
 
 #map {
@@ -39,9 +40,9 @@
 #logo{
 
     position: relative;
-    left: 10px;
-    top: 10px;
-    width: 150px;
+    left: 2%;
+    top: 1%;
+    width: 45%;
 
 }
 
@@ -158,24 +159,11 @@
     border-color: rgb(200, 20, 20);
 }
 
-#commentPinButton{
-
-    bottom: 70px;
-    right: 10px;
-
-}
-
-#deletePinButton{
-
-    bottom: 10px;
-    right: 10px;
-
-}
 
 #commentMapButton{
 
-    bottom: 10px;
-    right: 10px;
+    bottom: 5%;
+    right: 0.8%;
 
 }
 
@@ -183,44 +171,112 @@
    top: 0px;
    left: 5%;
    width: 40%;
+   height: 14%
 }
 
 #publicMapsButton{
     top: 60px;
     left: 5%;
     width: 40%;
+    height: 14%
 }
 
 #myFriendsMapButton{
     top: 120px;
     left: 5%;
     width: 40%;
+    height: 14%
 }
 
 #myMapsButton{
     top: 180px;
     left: 5%;
     width: 40%;
+    height: 14%
+    
 }
 
 #findWayButton{
-
-    bottom: 10px;
+    
+    bottom: 1%;
     left: 10px;
     width: 40%;
+    
+}
+
+#commentPinButton{
+
+    bottom: 11%;
+    right: 2%;
+
+}
+
+#deletePinButton{
+
+    bottom: 1%;
+    right: 2%;
 
 }
 
 #currentPinPanel{
     background-color: rgba(0, 0, 0, .05);
-    position: relative;
+    position: absolute;
     border-top-style: solid;
     border-width: 2px;
-    height: 560px;
-    top: 280px;
+    height: var(--currentPinPanelheight);
+    bottom: 0px;
     text-align: center;
     padding-left: 5%;
     padding-right: 5%;  
 
 }
 
+/*
+Modal Implementation
+*/
+
+/* The Modal (background) */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+}
+
+/* Modal Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; 
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+#creatPinModalName{
+
+    text-decoration: none;
+    
+
+}

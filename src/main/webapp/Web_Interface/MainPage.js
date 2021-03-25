@@ -1,6 +1,7 @@
 var map;
 var placingPin = false;
 var currentPin = null;
+var pinIdNumber = 0;
 
 const MAP_BOUNDS = {
     north: 85,
@@ -68,7 +69,7 @@ function initMap() {
 }
 
 function clickOnMap(location) {
-    
+
     //Unselect currentPin
     if (currentPin!=null){
 
@@ -86,20 +87,32 @@ function clickOnMap(location) {
             scaledSize: new google.maps.Size(35, 35)
         };
 
+        
         //Place the marker
         var marker = new google.maps.Marker({
             position: location, 
             map: map,
-            icon: icon
+            icon: icon,
+            id: pinIdNumber
         });
-
+        
         //Adding a Listener
         marker.addListener('click', function (e){ selectPin(marker);
         });
         
+        //Select the pin
+        selectPin(marker);
+        
         //Reset the cursor to drag
         map.setOptions({draggableCursor:'default'});
-
+        
+        //Adding one to the pinIdNumber
+        pinIdNumber += 1;
+        
+        
+        //Open up the modal window
+        $("#createPinModal").show();
+        
         //Reset placingPin
         placingPin = false;
         
@@ -115,6 +128,7 @@ function selectPin(pin){
         scaledSize: new google.maps.Size(50, 50)
     };
 
+    //If the pin is alread selected, we unselect it
     if (pin === currentPin){
 
         unselectPin(pin);
@@ -123,27 +137,38 @@ function selectPin(pin){
 
     else {
         
+        //Unselect any ppotential currentPin
+        unselectPin(currentPin);
+
+        //Select the new Pin
         var currentPinPanel = document.getElementById("currentPinPanel");
         pin.setIcon(selectIcon);
         currentPinPanel.style.display = "block";
         currentPin = pin;
-        
+
+        //Fill the currentPin Panel
+        $("#pinTitle").text("Pin n° " + pin.id);
+
     }
     
 }
 
 function unselectPin(pin){
 
-    var unselectedIcon = {
-        url: "./Resource/Marker.png",
-        scaledSize: new google.maps.Size(35, 35)
-    };
-    
-    var currentPinPanel = document.getElementById("currentPinPanel");
-    pin.setIcon(unselectedIcon);
-    currentPinPanel.style.display = "none";
-    currentPin = null;
-    
+    if(pin != null){
+        
+        var unselectedIcon = {
+            url: "./Resource/Marker.png",
+            scaledSize: new google.maps.Size(35, 35)
+        };
+        
+        var currentPinPanel = document.getElementById("currentPinPanel");
+        pin.setIcon(unselectedIcon);
+        currentPinPanel.style.display = "none";
+        currentPin = null;
+        
+    }
+
 }
 
 function cancelAction(){
@@ -180,12 +205,22 @@ function deletePin(){
     
 }
 
+//Close the modal window
+function closeCreatePinModal() {
+    
+    $(".modal").hide();
+    deletePin(currentPin);
+    unselectPin(currentPin);
+
+} 
+
 //jQuery (runs when page is loaded)
 $(document).ready(function($) {
 
     $("#addPinButton").click(addPin);
     $("#deletePinButton").click(deletePin);
+    $("#closeCreatPinModal").click(closeCreatePinModal);
+    //$("#createPinModal").click(closeCreatePinModal);
     document.getElementById("currentPinPanel").style.display = "none";
 
 });
-
