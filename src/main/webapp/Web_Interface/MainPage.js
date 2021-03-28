@@ -10,8 +10,7 @@ const MAP_BOUNDS = {
     east: 180,
 };
 
-var marker;
-var test;
+
 function getServerData(url, success){
     $.ajax({
         dataType: "json",
@@ -25,12 +24,7 @@ function postServerData(url, data, success){
         url: url,
         data: data,
         contentType : 'application/json',
-        dataType: "json",
-		//success: function(response) {
-		//marker.id = response;
-        //test = response;
-		//console.log(test);
-    //}
+        dataType: "json"
     }).done(success);
 }
 
@@ -42,16 +36,6 @@ function putServerData(url, data, success){
         contentType : 'application/json',
         dataType: "json"
     }).done(success);
-}
-
-function callDone(result){
-	var templateExample = _.template($('#templateExample').html());
-
-	var html = templateExample({
-		"attribute":JSON.stringify(result)
-	});
-
-	$("#result").append(html);
 }
 
 function initMap() {
@@ -105,11 +89,13 @@ function clickOnMap(location) {
 
         
         //Place the marker
-       marker = new google.maps.Marker({
+        var marker = new google.maps.Marker({
             position: location, 
             map: map,
             icon: icon,
-          
+            pinTitle: "Pin n°" + pinIdNumber,
+            pinDescription: "Description",
+            id: pinIdNumber
         });
         
         //Adding a Listener
@@ -127,23 +113,68 @@ function clickOnMap(location) {
         
         
         //Open up the modal window
-        //$("#createPinModal").show();
+        $("#createPinModal").show();
         
-		//Calling WS
-		var pin = {
-			user: 1,
-			title: "TItre",
-			description: "Desc",
-			tags: null,
-			latitude: 4,
-			longitude: 7
-			};
-	postServerData("/ws/services/pins/create", JSON.stringify(pin), callDone);
         //Reset placingPin
         placingPin = false;
         
     }
     
+}
+
+function createPin(){
+
+    //Get the values inputed by the user
+    var title = $("#creatPinModalName").val();
+    var description = $("#creatPinModalDescription").val();
+
+
+    if (title == ""){
+
+        alert("You must add a valid Title!");
+
+    }
+
+    else if(title.length > 30){
+
+        alert("Your Title is too long! (30 characters max.)");
+
+    }
+    
+    else if(description.length > 200){
+
+        alert("Your Description is too long! (200 character max.)");
+
+    }
+
+    else{
+        
+        //Hide the modal window
+        $("#createPinModal").hide();
+        
+        //Add properties to the pin
+        currentPin.pinTitle = title;
+        currentPin.pinDescription = description; 
+    
+        //Clear the textBoxes
+        $("#creatPinModalName").val('');
+        $("#creatPinModalDescription").val('');
+    
+        //Refresh the currentPinPanel
+        refreshCurrentPinPanel();
+
+    }
+
+}
+
+function refreshCurrentPinPanel(){
+
+    $("#pinTitle").text(currentPin.pinTitle);
+    $("#pinDescription").text(currentPin.pinDescription);
+    $("#pinTitle").height( $("#pinTitle")[0].scrollHeight);
+
+    //TODO
+
 }
 
 function selectPin(pin){
@@ -173,7 +204,8 @@ function selectPin(pin){
         currentPin = pin;
 
         //Fill the currentPin Panel
-        $("#pinTitle").text("Pin n° " + pin.id);
+        $("#pinTitle").text(pin.pinTitle);
+        $("#pinDescription").text(pin.pinDescription);
 
     }
     
@@ -232,7 +264,7 @@ function deletePin(){
 }
 
 //Close the modal window
-function closeCreatePinModal() {
+function cancelCreatePinModal() {
     
     $(".modal").hide();
     deletePin(currentPin);
@@ -245,8 +277,11 @@ $(document).ready(function($) {
 
     $("#addPinButton").click(addPin);
     $("#deletePinButton").click(deletePin);
-    $("#closeCreatPinModal").click(closeCreatePinModal);
-    //$("#createPinModal").click(closeCreatePinModal);
+    $("#closeCreatPinModal").click(cancelCreatePinModal);
+    $("#creatPinModalCancelButton").click(cancelCreatePinModal);
+    $("#creatPinModalCreatePinButton").click(createPin);
+
     document.getElementById("currentPinPanel").style.display = "none";
 
 });
+

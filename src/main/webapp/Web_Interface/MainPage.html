@@ -24,11 +24,8 @@
     <body>
         <div id="map"></div>
 
-        <script id="templateExample" type="text/template">
-			<div>
-				<%= attribute %>
-			</div>
-		</script>
+        
+
         <!-- Panels Top -->
         <div id="topPanel">
             <h1 id="mapTitle">Map Title</h1>
@@ -60,27 +57,38 @@
 
             <div id = "currentPinPanel">
 
-                <!--TODO-->
-                <h1 id="pinTitle">Pin Title</h1>
-                <p id="pinDescription">This is the pin description! Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi culpa iure minima eligendi ab sapiente earum. Quia, voluptatem enim odit et in cum quidem. Esse libero fuga commodi atque sequi!</p>
+                <h1 id="pinTitle"></h1>
+                <p id="pinDescription"></p>
                 <button class="commentButton" id="commentPinButton" type="button">  </button>
                 <button class="deleteButton" id="deletePinButton" type="button">  </button>
                 <button class="defaultButton" id="findWayButton" type="button"> Find way </button>
-
+                
             </div>
             
         </div> 
-
-        <!-- createPin modal -->
-        <div id="createPinModal" class="modal">
         
-        <!-- createPin modal content -->
-        <div class="modal-content">
-            <span class="close" id="closeCreatPinModal">&times;</span>
-            <input [type = "text"] id = creatPinModalName>  </input> 
-            <h1> Create pin </h1>
-        </div>
-        <div id="result"></div>
+        <!-- createPin modal -->
+        <div id="createPinModal" class="modal">        
+            
+            <!-- createPin modal content -->
+            <div class="modalContent" id="createPinModalContent">
+                <div class="modalHeader">
+                <span class="close" id="closeCreatPinModal">&times;</span>            
+                <h2>Create Pin</h2>
+            </div>
+
+            <div class="modalBody" id = "createPinModalContentBody">
+                <input [type = "text"] id = creatPinModalName placeholder="Pin name">  </input> 
+                <input [type = "text"] id = creatPinModalDescription placeholder="Pin description (200 wharacters max)">  </input> 
+            </div>
+            
+            <div class="modalFooter" id="creaytePinModalFooter">
+                <button id = "creatPinModalCreatePinButton"> Add pin </button>
+                <button id = "creatPinModalCancelButton"> Cancel </button>    
+            </div>
+        
+        </div> 
+        
         </div> 
 
     </body>

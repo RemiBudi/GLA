@@ -219,6 +219,8 @@
 }
 
 #currentPinPanel{
+
+    width: 90%;
     background-color: rgba(0, 0, 0, .05);
     position: absolute;
     border-top-style: solid;
@@ -250,12 +252,12 @@ Modal Implementation
 }
 
 /* Modal Box */
-.modal-content {
+.modalContent {
   background-color: #fefefe;
   margin: 15% auto; 
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; 
+  width: 70%; 
 }
 
 /* The Close Button */
@@ -273,10 +275,69 @@ Modal Implementation
   cursor: pointer;
 }
 
+/* Modal Header */
+.modalHeader {
+    padding: 2px 16px;
+    background-color: #6ac0e7;
+    color: white;
+}
+
+/* Modal Body */
+.modalBody {padding: 2px 16px;}
+
+/* Modal Footer */
+.modalFooter {
+    padding: 2px 16px;
+    background-color: #6ac0e7;
+    color: white;
+    /*
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    */
+}
+
+/* Modal Content */
+.modalContent {
+    position: relative;
+    top: 40%;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation-name: createPinModalAnimation;
+    animation-duration: 0.4s;
+}
+
+/* Add Animation */
+@keyframes createPinModalAnimation {
+    from {top: -300px; opacity: 0}
+    to {top: 40%; opacity: 1}
+} 
+
+
+#createPinModalContent{
+
+    width: 20%;
+
+}
 
 #creatPinModalName{
 
-    text-decoration: none;
-    
+    position: relative;
+    width: 95%;
+    margin-top: 3%;
 
 }
+
+#creatPinModalDescription{
+
+    position: relative;
+    width: 95%;
+    margin-top:2%;
+    margin-bottom: 3%;
+
+}
+
