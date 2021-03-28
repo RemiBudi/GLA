@@ -93,6 +93,8 @@ function clickOnMap(location) {
             position: location, 
             map: map,
             icon: icon,
+            pinTitle: "Pin n°" + pinIdNumber,
+            pinDescription: "Description",
             id: pinIdNumber
         });
         
@@ -118,6 +120,61 @@ function clickOnMap(location) {
         
     }
     
+}
+
+function createPin(){
+
+    //Get the values inputed by the user
+    var title = $("#creatPinModalName").val();
+    var description = $("#creatPinModalDescription").val();
+
+
+    if (title == ""){
+
+        alert("You must add a valid Title!");
+
+    }
+
+    else if(title.length > 30){
+
+        alert("Your Title is too long! (30 characters max.)");
+
+    }
+    
+    else if(description.length > 200){
+
+        alert("Your Description is too long! (200 character max.)");
+
+    }
+
+    else{
+        
+        //Hide the modal window
+        $("#createPinModal").hide();
+        
+        //Add properties to the pin
+        currentPin.pinTitle = title;
+        currentPin.pinDescription = description; 
+    
+        //Clear the textBoxes
+        $("#creatPinModalName").val('');
+        $("#creatPinModalDescription").val('');
+    
+        //Refresh the currentPinPanel
+        refreshCurrentPinPanel();
+
+    }
+
+}
+
+function refreshCurrentPinPanel(){
+
+    $("#pinTitle").text(currentPin.pinTitle);
+    $("#pinDescription").text(currentPin.pinDescription);
+    $("#pinTitle").height( $("#pinTitle")[0].scrollHeight);
+
+    //TODO
+
 }
 
 function selectPin(pin){
@@ -147,7 +204,8 @@ function selectPin(pin){
         currentPin = pin;
 
         //Fill the currentPin Panel
-        $("#pinTitle").text("Pin n° " + pin.id);
+        $("#pinTitle").text(pin.pinTitle);
+        $("#pinDescription").text(pin.pinDescription);
 
     }
     
@@ -206,7 +264,7 @@ function deletePin(){
 }
 
 //Close the modal window
-function closeCreatePinModal() {
+function cancelCreatePinModal() {
     
     $(".modal").hide();
     deletePin(currentPin);
@@ -219,8 +277,11 @@ $(document).ready(function($) {
 
     $("#addPinButton").click(addPin);
     $("#deletePinButton").click(deletePin);
-    $("#closeCreatPinModal").click(closeCreatePinModal);
-    //$("#createPinModal").click(closeCreatePinModal);
+    $("#closeCreatPinModal").click(cancelCreatePinModal);
+    $("#creatPinModalCancelButton").click(cancelCreatePinModal);
+    $("#creatPinModalCreatePinButton").click(createPin);
+
     document.getElementById("currentPinPanel").style.display = "none";
 
 });
+
