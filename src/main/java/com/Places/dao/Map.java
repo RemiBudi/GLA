@@ -1,42 +1,50 @@
 package com.Places.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+import javax.persistence.Id;
 
 @PersistenceCapable
 public class Map {
-	
-	@PrimaryKey
-	@Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
-	Long map_id;
 
+	@PrimaryKey
+	@Id
+	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	private long id;
+
+	// Private =0 , public = 1
 	int status;
-	
-	User owner;
+
 	String title;
 	String description;
-	List<String> tags;
-	List<Pin> pins;
-	List<Comment> comments;
 
-	public Map(int status, long id, User owner, String title, List<String> tags, List<Pin> pins,
-			List<Comment> comments) {
+	String tags;
+
+	@Persistent(defaultFetchGroup = "true")
+	List<Long> pins = new ArrayList<Long>();
+
+	@Persistent(defaultFetchGroup = "true")
+	List<Long> comments = new ArrayList<Long>();
+
+	long user;
+
+	public Map(int status, String title, String description, String tags, long user) {
 
 		this.status = status;
-		this.owner = owner;
 		this.title = title;
+		this.description = description;
 		this.tags = tags;
-		this.pins = pins;
-		this.comments = comments;
-		this.map_id = id;
+		this.user = user;
+
 	}
-	
-	public Map(Long id) {
-		this.map_id = id;
+
+	public Map(long id) {
+		this.id = id;
 
 	}
 
@@ -44,7 +52,6 @@ public class Map {
 
 	}
 
-	// Setter et Getter
 
 	public int getStatus() {
 		return status;
@@ -55,19 +62,11 @@ public class Map {
 	}
 
 	public long getId() {
-		return this.map_id;
+		return this.id;
 	}
 
 	public void setId(long id) {
-		this.map_id = id;
-	}
-
-	public User getOwner() {
-		return owner;
-	}
-
-	public void setOwner(User owner) {
-		this.owner = owner;
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -86,30 +85,36 @@ public class Map {
 		this.description = description;
 	}
 
-	public List<String> getTags() {
+	public String getTags() {
 		return tags;
 	}
 
-	public void setTags(List<String> tags) {
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
 
-	public List<Pin> getPins() {
+	public List<Long> getPins() {
 		return pins;
 	}
 
-	public void setPins(List<Pin> pins) {
+	public void setPins(List<Long> pins) {
 		this.pins = pins;
 	}
 
-	public List<Comment> getComments() {
+	public long getUser() {
+		return user;
+	}
+
+	public void setUser(long user) {
+		this.user = user;
+	}
+
+	public List<Long> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comment> comments) {
+	public void setComments(List<Long> comments) {
 		this.comments = comments;
 	}
-
-	// Setter and getter
 
 }

@@ -1,19 +1,14 @@
 package com.Places.dao;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.annotation.Resource;
 import javax.jdo.JDODataStoreException;
-import javax.jdo.JDOHelper;
-import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
-import javax.transaction.UserTransaction;
 
 public class UserDaoImpl implements UserDao {
 
@@ -24,56 +19,38 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	/**
-	 * @param
-	 * @return List of users of the application
-	 */
-	public List<User> getUsers() {
-
-		List<User> userList = new ArrayList<User>();
-		return userList;
-	}
-
-	/**
 	 * @param Username
 	 * @return The User whose username corresponds to the argument
 	 */
-	public User getUser(String username) throws IndexOutOfBoundsException {
+	@SuppressWarnings("unchecked")
+	public User getUser(String username) {
 
 		// List containing the user we search
 		List<User> result;
 		User user;
-
+		Query q;
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
-		tx.setRetainValues(true);
-
 		try {
 			tx.begin();
 
-			// Query q = pm.newQuery("SELECT FROM "+User.class.getName()+" WHERE
-			// userName=='\""+username+"\"'");
-			Query q = pm.newQuery(User.class, "userName == '" + username + "'");
+			q = pm.newQuery(User.class, "username.equals(\"" + username + "\")");
 
 			result = (List<User>) q.execute();
 
 			try {
 				user = (User) result.iterator().next();
-			} catch (NoSuchElementException e) {
-				System.out.println("No user corresponding to this username");
+			} catch (NoSuchElementException | IndexOutOfBoundsException e) {
 				return null;
 
 			}
-			q.close(result);
-
 			tx.commit();
 		} finally {
 
-			if (tx.isActive()) {
+			if (tx.isActive())
 				tx.rollback();
-			}
-
-			pm.close();
 		}
+		q.close(result);
 		return user;
 	}
 
@@ -81,9 +58,56 @@ public class UserDaoImpl implements UserDao {
 	 * @param Username, Password
 	 * @return The created user
 	 */
-	public User createUser(String username) {
 
-		User newUser = new User(username);
+	/**
+	 * @param Pin id
+	 * @return the pin corresponding to the specified id
+	 */
+
+	public User getUser(long id) {
+
+		User user;
+		User detached = new User();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try {
+			tx.begin();
+
+			user = pm.getObjectById(User.class, id);
+
+			detached = (User) pm.detachCopy(user);
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
+		}
+		pm.close();
+		return detached;
+	}
+
+	public User login(String username, String password) {
+
+		// Check if this username exists in database
+		User user = getUser(username);
+		if (user == null)
+			return null;
+
+		// Check if input password matches the user's password
+		if (user.getPassword().equals(password))
+			return user;
+		else
+			return null;
+
+	}
+
+	public User createUser(String username, String password, String bio) {
+
+		// Check if username already exists in database
+		if (getUser(username) != null)
+			return null;
+
+		User newUser = new User(username, password, bio);
 
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -91,12 +115,12 @@ public class UserDaoImpl implements UserDao {
 
 		tx.begin();
 		try {
-		pm.makePersistent(newUser);
-		} catch(JDODataStoreException e) {
-			System.out.println("Username already taken");
+			pm.makePersistent(newUser);
+		} catch (JDODataStoreException e) {
+			System.out.println("Error creation");
 			return null;
 		}
-		
+
 		tx.commit();
 
 		if (tx.isActive()) {
@@ -104,8 +128,6 @@ public class UserDaoImpl implements UserDao {
 		}
 		pm.close();
 
-		System.out.println(newUser.userName);
-		System.out.println(newUser.user_id);
 		return newUser;
 	}
 
@@ -113,57 +135,182 @@ public class UserDaoImpl implements UserDao {
 	 * @param The user to be remove
 	 * @return
 	 */
-	public void removeUser(String username) {
+	public void removeUser(long userId) {
 
-		
 		PersistenceManager pm = pmf.getPersistenceManager();
-		User user;
-		
+		Transaction tx = pm.currentTransaction();
+
+		tx.begin();
 		try {
-		  user = pm.getObjectById(User.class, username);
-		} catch (JDOObjectNotFoundException e) {
-			System.out.println("No user by this username");
-			return;
+			User user = pm.getObjectById(User.class, userId);
+
+			// Delete the map of this user
+			for (int i = 0; i < user.getMyMaps().size(); i++)
+				DAO.getMapDao().removeMap(user.getMyMaps().get(i));
+
+			pm.deletePersistent(user);
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
 		}
-		pm.deletePersistent(user);
-		
+
 		pm.close();
 	}
 
 	/**
-	 * @param The user whom will add the friend, the String corresponding to
-	 *            friend's username
-	 * @return
+	 * @param The user to be added as friend
+	 * @return the friend User
 	 */
-	public void addFriend(String user, String friend) {
+	public User addFriend(long userId, String friendUsername) {
 
-		List<String> tmp = new ArrayList<String>();
-	
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
-		tx.setRetainValues(true);
-
+		User friendUser;
 		tx.begin();
- 
-		
-		User userAdder = pm.getObjectById(User.class, "Remsi");
-		//User userFriend = pm.getObjectById(User.class, "Trizy");
-		System.out.println("Add "+userAdder.userName+" and "+friend);
-		
-		//tmp.add(friend);
-		pm.deletePersistentAll(userAdder.contacts);
-		userAdder.setContacts(Arrays.asList(friend));
-		System.out.print("friend"+ userAdder.getContacts().get(0));
-		pm.makePersistent(userAdder);
+		try {
 
-		tx.commit();
+			User userAdder = pm.getObjectById(User.class, userId);
 
-		if (tx.isActive()) {
-			tx.rollback();
+			// Check if input friend's username exists in database
+			friendUser = getUser(friendUsername);
+			if (friendUser == null)
+				return null;
+			userAdder.getContacts().add(friendUser.getUser_id());
+			friendUser.getContacts().add(userId);
+			userAdder.getMyRequests().remove((friendUser.getId()));
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
 		}
 		pm.close();
-	  
+		return friendUser;
 
+	}
+
+	/**
+	 * @param The user_id of current user
+	 * @return current user friends list
+	 */
+	public List<User> getFriends(long userId) {
+
+		List<User> friends = new ArrayList<User>();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+
+		tx.begin();
+		try {
+
+			User current = pm.getObjectById(User.class, userId);
+
+			for (int i = 0; i < current.getContacts().size(); i++)
+				friends.add(pm.getObjectById(User.class, current.getContacts().get(i)));
+
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
+		}
+		return friends;
+
+	}
+
+	/**
+	 * @param The user of edited user
+	 * @return edited user
+	 */
+	public User editUser(User user) {
+
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+
+		tx.begin();
+		try {
+			User oldUser = pm.getObjectById(User.class, user.getId());
+
+			if (!oldUser.getUsername().equals(user.getUsername()))
+				oldUser.setUsername(user.getUsername());
+			if (!oldUser.getPassword().equals(user.getPassword()))
+				oldUser.setPassword(user.getPassword());
+			if (!oldUser.getBio().equals(user.getBio()))
+				oldUser.setBio(user.getBio());
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
+		}
+		pm.close();
+
+		return null;
+	}
+
+	/**
+	 * @param id of current user, friend Username
+	 * @return friend User
+	 */
+	public User friendRequest(long userId, String friendUsername) {
+
+		User friend = getUser(friendUsername);
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+
+		tx.begin();
+		try {
+
+			if (friend != null) {
+				// If request from this user already exists, return an error code that will be
+				// read in the front
+				if (friend.getMyRequests().contains((userId)))
+					return new User("-1", "", "");
+				// If the requested user is already a friend, return an error code that will be
+				// read in the front
+				else if (friend.getContacts().contains(userId))
+					return new User("-2", "", "");
+				else
+					friend.getMyRequests().add(userId);
+			}
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
+		}
+		pm.close();
+		return friend;
+	}
+
+	/**
+	 * @param id of current user, friend Username
+	 * @return edited user
+	 */
+	// id du demandé, username du demandeur
+	public User denyFriend(long userId, String friendUsername) {
+
+		User friend = getUser(friendUsername);
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		User user = null;
+		tx.begin();
+
+		try {
+
+			user = pm.getObjectById(User.class, userId);
+
+			user.getMyRequests().remove((friend.getId()));
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
+		}
+
+		pm.close();
+		return user;
 
 	}
 

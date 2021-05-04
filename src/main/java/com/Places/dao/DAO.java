@@ -1,17 +1,26 @@
 package com.Places.dao;
 
-public class DAO{
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManagerFactory;
 
-	// Comments methods
+public class DAO {
+	// PersistenceManagerFactory
+	private static PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory("BDD");
 	
-
-	// Map methods
-
-	
-
-	// Pin methods
-	
-	// User Dao
-	
+	 public static UserDao getUserDao() {
+	        return new UserDaoImpl(pmf);
+	    }
+	 
+	 public static PinDao getPinDao() {
+	        return new PinDaoImpl(pmf);
+	    }
+	 
+	 public static MapDao getMapDao() {
+	        return new MapDaoImpl(pmf);
+	    }
+	 
+	 public static CommentDao getCommentDao() {
+	        return new CommentDaoImpl(pmf);
+	    }
 
 }

@@ -6,9 +6,13 @@
     <!-- Test configuration -->
     <persistence-unit name="BDD">
     	<class>com.Places.dao.Comment</class>
+    	<class>com.Places.dao.CommentContainer</class>
     	<class>com.Places.dao.Map</class>
+    	<class>com.Places.dao.MapContainer</class>
     	<class>com.Places.dao.Pin</class>
+    	<class>com.Places.dao.PinContainer</class>
     	<class>com.Places.dao.User</class>
+    	<class>com.Places.dao.UserContainer</class>
         <exclude-unlisted-classes/>
         
         <properties>

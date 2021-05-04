@@ -5,41 +5,28 @@ import java.util.List;
 public interface CommentDao {
 
 	/**
-	 * @param Map
-	 * @return List of comments of specific map
+	 * @param comment id
+	 * @return Comment corresponding to the id
 	 */
-
-	List<Comment> getComments(Map map);
-
-	/**
-	 * @param Pin
-	 * @return List of comments of specific pin
-	 */
-	List<Comment> getComments(Pin pin);
-	
-	
-	/**
-	 * @param username
-	 * @return List of comments from a specified user
-	 */
-	List<Comment> getComments(String username);
+	Comment getComment(long id);
 
 	/**
-	 * @param User , title, text, map
-	 * @return Comment to be posted on the map
+	 * @param id of pin or map, boolean if map
+	 * @return List of comments of the specified pinId or mapId
 	 */
-	Comment createComment(String user, String title, String text, Map map);
+	List<Comment> getComments(long objectId, boolean map);
 
 	/**
-	 * @param User , title, text, map
-	 * @return Comment to be posted on the pin
+	 * @param author id , title, text, note, id of the object (pin/map), boolean if
+	 *               map comment
+	 * @return Comment to be posted on the pin/map
 	 */
-	Comment createComment(String user, String title, String text, Pin pin);
+	Comment createComment(long user, String title, String text, int note, long objectId, boolean map);
 
 	/**
-	 * @param Comment to be remove
+	 * @param commentId of comment to be remove
 	 * @return
 	 */
-	void removeComment(Comment comment);
+	void removeComment(long commentId);
 
 }

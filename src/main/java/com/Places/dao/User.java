@@ -7,89 +7,117 @@ import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
-import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;	
-import javax.persistence.OneToMany;
-
+import javax.persistence.Id;
 
 @PersistenceCapable
 public class User {
 
-
-	@Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
-	long user_id;
-	
+	@Id
 	@PrimaryKey
-	String userName;
+	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	long id;
 
-	@ElementCollection
-	List<String> contacts = new ArrayList<String>();
-	
-	List<Map> myMaps;
-	List<Comment> myComments;
+	String username;
 
-	// Constructeur
-	public User(String userName, List<String> contacts, List<Map> myMaps, List<Comment> myComments) {
-		this.userName = userName;
-		this.contacts = contacts;
-		this.myMaps = myMaps;
-		this.myComments = myComments;
+	String password;
+	String bio;
 
+	@Persistent(defaultFetchGroup = "true")
+	List<Long> contacts = new ArrayList<Long>();
+
+	@Persistent(defaultFetchGroup = "true")
+	List<Long> myMaps = new ArrayList<Long>();
+
+	@Persistent(defaultFetchGroup = "true")
+	List<Long> myComments = new ArrayList<Long>();
+
+	@Persistent(defaultFetchGroup = "true")
+	List<Long> myRequests = new ArrayList<Long>();
+
+	public User(String username, String password, String bio) {
+		this.username = username;
+		this.password = password;
+		this.bio = bio;
 	}
-	
-	//constructeur username
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getBio() {
+		return bio;
+	}
+
+	public void setBio(String bio) {
+		this.bio = bio;
+	}
+
 	public User(String un) {
-		this.userName = un;
+		this.username = un;
 	}
 
-	// Constructeur vide
 	public User() {
 
 	}
-	
+
 	public Long getUser_id() {
-		return user_id;
+		return id;
 	}
 
 	public void setUser_id(long user_id) {
-		this.user_id = user_id;
+		this.id = user_id;
 	}
 
-	// Getter
-	public String getUserName() {
-		return this.userName;
-	}
-
-	public List<String> getContacts() {
+	public List<Long> getContacts() {
 		return this.contacts;
 	}
 
-	public List<Map> getMyMaps() {
+	public List<Long> getMyMaps() {
 		return this.myMaps;
 	}
 
-	public List<Comment> getMyComments() {
+	public List<Long> getMyComments() {
 		return this.myComments;
 	}
 
-	// Setter
-	public void setUserName(String u) {
-		this.userName = u;
-	}
-
-	public void setContacts(List<String> us) {
+	public void setContacts(List<Long> us) {
 		this.contacts = us;
 	}
 
-	public void setMyMaps(List<Map> m) {
+	public void setMyMaps(List<Long> m) {
 		this.myMaps = m;
 	}
 
-	public void setMyComments(List<Comment> c) {
+	public void setMyComments(List<Long> c) {
 		this.myComments = c;
+	}
+
+	public List<Long> getMyRequests() {
+		return myRequests;
+	}
+
+	public void setMyRequests(List<Long> myRequests) {
+		this.myRequests = myRequests;
 	}
 
 }
