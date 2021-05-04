@@ -1,50 +1,57 @@
 package com.Places.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
-
-
+import javax.persistence.Id;
 
 @PersistenceCapable
 public class Pin {
 
 	@PrimaryKey
-	private Long id;
-	
-	Long user;
+	@Id
+	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	private long id;
+
 	String title;
 	String description;
-	List<String> tags;
+	String tags;
+
 	float latitude;
 	float longitude;
 
+	@Persistent(defaultFetchGroup = "true")
+	List<Long> comments = new ArrayList<Long>();
+
+	long map = 0;
+
+	@Persistent(defaultFetchGroup = "true")
+	List<String> images = new ArrayList<String>();
+
 	// Constructeur
-	public Pin(long id, long user, String title, String description, List<String> tags, float latitude, float longitude) {
-		this.id = id;
-		this.user = user;
+	public Pin(String title, String description, String tags, float latitude, float longitude, long map) {
 		this.title = title;
 		this.description = description;
 		this.tags = tags;
-		this.latitude=latitude;
-		this.longitude=longitude;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.map = map;
 
 	}
-	
-	
+
 	public Pin(String title) {
 		this.title = title;
 	}
 
-	// Constructeur vide
 	public Pin() {
 
 	}
 
-	// Setter and getter
+
 	public String getTitle() {
 		return title;
 	}
@@ -52,8 +59,6 @@ public class Pin {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	
 
 	public long getId() {
 		return id;
@@ -71,45 +76,52 @@ public class Pin {
 		this.description = description;
 	}
 
-	public List<String> getTags() {
+	public String getTags() {
 		return tags;
 	}
 
-	public void setTags(List<String> tags) {
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
-
-
-
-
-	public Long getUser() {
-		return user;
-	}
-
-
-	public void setUser(Long user) {
-		this.user = user;
-	}
-
 
 	public float getLatitude() {
 		return latitude;
 	}
 
-
 	public void setLatitude(float latitude) {
 		this.latitude = latitude;
 	}
-
 
 	public float getLongitude() {
 		return longitude;
 	}
 
-
 	public void setLongitude(float longitude) {
 		this.longitude = longitude;
 	}
 
+	public long getMap() {
+		return map;
+	}
+
+	public void setMap(long map) {
+		this.map = map;
+	}
+
+	public List<Long> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Long> comments) {
+		this.comments = comments;
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
+	}
 
 }

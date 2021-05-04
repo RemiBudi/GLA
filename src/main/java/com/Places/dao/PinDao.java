@@ -1,17 +1,7 @@
 package com.Places.dao;
 
-import java.util.List;
-
 public interface PinDao {
 
-	/**
-	 * @param Map
-	 * @return the list of pins of a specific map
-	 */
-
-	List<Pin> getPins(Map map);
-	
-	
 	/**
 	 * @param Pin id
 	 * @return the pin corresponding to the specified id
@@ -20,17 +10,29 @@ public interface PinDao {
 	Pin getPin(long id);
 
 	/**
-	 * @param User (creator of the pin), title of the pin, description of the pin,
-	 *             location of pin, and its map
+	 * @param title of the pin, description of the pin, tags, location of pin, and
+	 *              its map id
 	 * @return the created pin
 	 */
-	Pin createPin(Long id, Long user, String title, String description, List<String> tags, float latitude, float longitude );
+	Pin createPin(String title, String description, String tags, float latitude, float longitude, long mapId);
 
 	/**
-	 * @param Pin to delete
+	 * @param id of the pin to delete
 	 * @return
 	 */
 
-	void removePin(Long pin_id);
+	void removePin(long pinId);
+
+	/**
+	 * @param Pin to edit
+	 * @return
+	 */
+	Pin editPin(Pin newPin);
+
+	/**
+	 * @param id of the pin, image to add (in base64)
+	 * @return
+	 */
+	void addImPin(long pinId, String image);
 
 }

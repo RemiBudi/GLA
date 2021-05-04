@@ -5,14 +5,14 @@ import java.util.List;
 public interface MapDao {
 
 	/**
-	 * @param User
+	 * @param user id
 	 * @return the list of maps of a specific user
 	 */
 
-	List<Map> getMaps(User user);
-	
+	List<Map> getMaps(long user);
+
 	/**
-	 * @param map_id
+	 * @param mapId
 	 * @return the map corresponding to the id
 	 */
 
@@ -25,16 +25,24 @@ public interface MapDao {
 	List<Map> getPublicMaps();
 
 	/**
-	 * @param User (creator of the map), title of the map, description of the map
+	 * @param id of the map creator, status (public/private) title of the map,
+	 *           description, tags
 	 * @return the created map
 	 */
-	Map createMap(User user, String title, String description);
+	Map createMap(long currentUser, int status, String title, String description, String tags);
 
 	/**
-	 * @param Map to delete
+	 * @param id of the map to delete
 	 * @return
 	 */
 
-	void removeMap(Map map);
+	void removeMap(long mapId);
+
+	/**
+	 * @param Map to edit
+	 * @return Map
+	 */
+
+	Map editMap(Map map);
 
 }

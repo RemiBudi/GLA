@@ -1,30 +1,44 @@
 package com.Places.dao;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+import javax.persistence.Id;
 
 @PersistenceCapable
 public class Comment {
 
-	String author;
-	int id;
+	@Id
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	long id;
+
+	long user;
 	String title;
 	String text;
-	Pin pin;
-	// Attribut date and time
+	int note;
 
-	public Comment(String author,String title, String text, Pin pin) {
-		this.author = author;
-		//this.id = id;
+	// id pin or map
+	long objectId;
+	// True = map comment, False = pin comment
+	boolean map;
+
+
+	public Comment(long user, String title, String text, int note, long objectId, boolean map) {
+		this.user = user;
 		this.title = title;
 		this.text = text;
-		this.pin = pin;
+		this.note = note;
+		this.objectId = objectId;
+		this.map = map;
 	}
-	
+
 	public Comment(String title) {
 		this.title = title;
 
 	}
-	
+
 	public Comment(int id) {
 		this.id = id;
 
@@ -33,22 +47,21 @@ public class Comment {
 	public Comment() {
 
 	}
-	
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
-	public String getAuthor() {
-		return author;
+	public long getUser() {
+		return user;
 	}
 
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setUser(long user) {
+		this.user = user;
 	}
 
 	public String getTitle() {
@@ -67,12 +80,28 @@ public class Comment {
 		this.text = text;
 	}
 
-	public Pin getPin() {
-		return pin;
+	public int getNote() {
+		return note;
 	}
 
-	public void setPin(Pin pin) {
-		this.pin = pin;
+	public void setNote(int note) {
+		this.note = note;
+	}
+
+	public long getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(long objectId) {
+		this.objectId = objectId;
+	}
+
+	public boolean isMap() {
+		return map;
+	}
+
+	public void setMap(boolean map) {
+		this.map = map;
 	}
 
 }

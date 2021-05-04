@@ -1,10 +1,8 @@
-package com.Places.dao;
+	package com.Places.dao;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.jdo.JDODataStoreException;
-import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Transaction;
@@ -18,67 +16,67 @@ public class PinDaoImpl implements PinDao {
 	}
 
 	/**
-	 * @param Map
-	 * @return the list of pins of a specific map
-	 */
-
-	public List<Pin> getPins(Map map) {
-
-		List<Pin> pinMapList = new ArrayList<Pin>();
-		
-		
-	
-		return map.getPins();
-	}
-
-	/**
 	 * @param Pin id
 	 * @return the pin corresponding to the specified id
 	 */
 
 	public Pin getPin(long id) {
 
-		PersistenceManager pm = pmf.getPersistenceManager();
-		Pin pin;
-
-		try {
-			pin = pm.getObjectById(Pin.class, id);
-		} catch (JDOObjectNotFoundException e) {
-			System.out.println("No pin");
-			return null;
-		}
-
-		pm.close();
-		return pin;
-
-	}
-
-	/**
-	 * @param User (creator of the pin), title of the pin, description of the pin,
-	 *             location of pin, and its map
-	 * @return the created pin
-	 */
-	public Pin createPin(Long id, Long user, String title, String description, List<String> tags, float latitude, float longitude) {
-
-
-		Pin pin = new Pin(id, user, title, description, tags, latitude, longitude);
+		Pin pin = null;
+		Pin detached = new Pin();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
-		tx.setRetainValues(true);
-
-		tx.begin();
 
 		try {
-			pm.makePersistent(pin);
-		} catch (JDODataStoreException e) {
-			System.out.println("Username already taken");
-			return null;
+			tx.begin();
+
+			pin = pm.getObjectById(Pin.class, id);
+			detached = pm.detachCopy(pin);
+
+			tx.commit();
+		} finally {
+			if (tx.isActive())
+				tx.rollback();
+
 		}
 
-		tx.commit();
+		pm.close();
 
-		if (tx.isActive()) {
-			tx.rollback();
+		return detached;
+
+	}
+
+	public List<String> convertTags(String tags) {
+
+		return Arrays.asList(tags.split("\\s*,\\s*"));
+	}
+
+	/**
+	 * @param title of the pin, description of the pin, tags, location of pin, and
+	 *              its map
+	 * @return the created pin
+	 */
+	public Pin createPin(String title, String description, String tags, float latitude, float longitude, long mapId) {
+
+		Pin pin = new Pin(title, description, tags, latitude, longitude, mapId);
+
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+
+		try {
+			tx.begin();
+
+			pm.makePersistent(pin);
+
+			// Add the pinId to the map's pins list
+			Map currentMap = pm.getObjectById(Map.class, mapId);
+			currentMap.getPins().add(pin.getId());
+
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
 		}
 		pm.close();
 
@@ -86,24 +84,89 @@ public class PinDaoImpl implements PinDao {
 	}
 
 	/**
-	 * @param Pin to delete
+	 * @param id of the pin to delete
 	 * @return
 	 */
 
-	public void removePin(Long pin_id) {
+	public void removePin(long pinId) {
 
 		PersistenceManager pm = pmf.getPersistenceManager();
-		Pin pin;
-
+		Pin pin = pm.getObjectById(Pin.class, pinId);
+		Transaction tx = pm.currentTransaction();
+		tx.setRetainValues(true);
 		try {
-			pin = pm.getObjectById(Pin.class, pin_id);
-		} catch (JDOObjectNotFoundException e) {
-			System.out.println("No user by this username");
-			return;
+			tx.begin();
+
+			// Remove the pin from the map pins list
+			Map map = pm.getObjectById(Map.class, pin.getMap());
+			map.getPins().remove(Long.valueOf(pinId));
+			pm.deletePersistent(pin);
+
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
 		}
-		pm.deletePersistent(pin);
 
 		pm.close();
+	}
+
+	/**
+	 * @param Pin to edit
+	 * @return edited Pin
+	 */
+	public Pin editPin(Pin newPin) {
+
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Pin oldPin;
+		Pin detached = null;
+		Transaction tx = pm.currentTransaction();
+		try {
+			tx.begin();
+
+			oldPin = pm.getObjectById(Pin.class, newPin.getId());
+
+			if (!oldPin.getTitle().equals(newPin.getTitle()))
+				oldPin.setTitle(newPin.getTitle());
+			if (!oldPin.getDescription().equals(newPin.getDescription()))
+				oldPin.setDescription(newPin.getDescription());
+			if (!oldPin.getTags().equals(newPin.getTags()))
+				oldPin.setTags(newPin.getTags());
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
+		}
+		detached = pm.detachCopy(oldPin);
+		pm.close();
+		return detached;
+
+	}
+
+	/**
+	 * @param id of the pin, image to add (in base64)
+	 * @return
+	 */
+	public void addImPin(long pinId, String image) {
+
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try {
+			tx.begin();
+
+			Pin pin = pm.getObjectById(Pin.class, pinId);
+
+			pin.getImages().add(image);
+			tx.commit();
+		} finally {
+
+			if (tx.isActive())
+				tx.rollback();
+		}
+		pm.close();
+
 	}
 
 }
